@@ -42,4 +42,10 @@ public class BoardService {
         return boardRepository.findById(boardId)
                 .orElseThrow(() -> new BusinessLogicException(ExceptionCode.BOARD_NOT_FOUND));
     }
+
+    // board 삭제
+    public void deleteBoard(Long boardId){
+        findBoardId(boardId);
+        boardRepository.deleteById(boardId);
+    }
 }

@@ -48,4 +48,11 @@ public class BoardController {
      *                URL 패턴에서 { }로 감싼 부분과 메서드 파라미터를 연결해 준다.
      */
 
+    @DeleteMapping("/{boardId}")
+    public ResponseEntity deleteBoard(@PathVariable("boardId") Long boardId){
+        boardService.deleteBoard(boardId);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
+
+
 }
