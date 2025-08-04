@@ -6,10 +6,8 @@ import lombok.Setter;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import project.server.board.dto.BoardPatchDto;
 import project.server.board.dto.BoardPostDto;
 import project.server.board.service.BoardService;
 
@@ -37,4 +35,17 @@ public class BoardController {
      *              Bean Validation 어노테이션 기반의 유효성 검사가 실행됨. 검증 실패 시 스프링은 자동으로 적절한 예외를 발생시키고
      *              400 Bad Request 등의 HTTP 응답을 클라이언트에 보냄.
      */
+
+    @PatchMapping("/{boardId}")
+    public ResponseEntity patchBoard(@PathVariable("boardId") Long boardId,
+                                     @RequestBody @Validated BoardPatchDto boardPatchDto){
+        boardService.updateBoard(boardPatchDto, boardId);
+        return ResponseEntity.status(HttpStatus.OK).body(boardId);
+    }
+
+    /*
+     * @PathVariable: Spring Framework 에서 사용되는 어노테이션으로, HTTP 요청 URL 경로에 포함된 값을 컨트롤러 메서드의 파라미터로 쉽게 매핑해 주는 역할.
+     *                URL 패턴에서 { }로 감싼 부분과 메서드 파라미터를 연결해 준다.
+     */
+
 }
