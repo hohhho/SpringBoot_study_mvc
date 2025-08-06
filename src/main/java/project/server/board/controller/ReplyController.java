@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import project.server.board.dto.ReplyPatchDto;
 import project.server.board.dto.ReplyPostDto;
 import project.server.board.dto.ReplyResponseDto;
 import project.server.board.service.ReplyService;
@@ -29,9 +30,17 @@ public class ReplyController {
         return ResponseEntity.status(HttpStatus.CREATED).body(replyId);
     }
 
+    // reply 수정
+    @PostMapping("/{replyId}")
+    public ResponseEntity patchReply(@PathVariable("replyId") Long replyId,
+                                     @RequestBody @Validated ReplyPatchDto replyPatchDto){
+        replyService.updateReply(replyPatchDto, replyId);
+        return ResponseEntity.status(HttpStatus.OK).body(replyId);
+    }
+
 
     // reply 전체 조회
-    @GetMapping("{boardId}")
+    @GetMapping("/{boardId}")
     public ResponseEntity<Page<ReplyResponseDto>> getAllReply(
             @PathVariable("boardId") Long boardId,
             @RequestParam(value = "page", defaultValue = "1") int page,
