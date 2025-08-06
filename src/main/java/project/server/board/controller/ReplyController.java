@@ -8,7 +8,9 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import project.server.board.dto.ReplyPostDto;
 import project.server.board.dto.ReplyResponseDto;
 import project.server.board.service.ReplyService;
 
@@ -18,8 +20,17 @@ import project.server.board.service.ReplyService;
 @RequiredArgsConstructor
 public class ReplyController {
 
-    private ReplyService replyService;
+    private final ReplyService replyService;
 
+    // reply 생성
+    @PostMapping
+    public ResponseEntity postReply(@RequestBody @Validated ReplyPostDto replyPostDto){
+        Long replyId = replyService.createReply(replyPostDto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(replyId);
+    }
+
+
+    // reply 전체 조회
     @GetMapping("{boardId}")
     public ResponseEntity<Page<ReplyResponseDto>> getAllReply(
             @PathVariable("boardId") Long boardId,
