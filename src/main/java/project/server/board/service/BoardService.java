@@ -1,9 +1,12 @@
 package project.server.board.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import project.server.board.dto.BoardPatchDto;
 import project.server.board.dto.BoardPostDto;
+import project.server.board.dto.BoardResponseDto;
 import project.server.board.entity.Board;
 import project.server.board.repository.BoardRepository;
 import project.server.exception.BusinessLogicException;
@@ -37,7 +40,7 @@ public class BoardService {
         return boardRepository.save(board).getBoardId();
     }
 
-    // board 수정 - findBoardId
+    // findBoardId
     public Board findBoardId(Long boardId){
         return boardRepository.findById(boardId)
                 .orElseThrow(() -> new BusinessLogicException(ExceptionCode.BOARD_NOT_FOUND));
@@ -47,5 +50,17 @@ public class BoardService {
     public void deleteBoard(Long boardId){
         findBoardId(boardId);
         boardRepository.deleteById(boardId);
+    }
+
+    // board 조회
+    public BoardResponseDto findByBoardId(Long boardId){
+        Board board = findBoardId(boardId);
+        return BoardResponseDto.FindFromBoard(board);
+    }
+
+    // board 전체 조회
+    public Page<BoardResponseDto> findAllBoards(Pageable pageable){
+        Page<Board> boards = boardRepository.findAll(pageable);
+        return boards.map(BoardResponseDto::FindFromBoard);
     }
 }

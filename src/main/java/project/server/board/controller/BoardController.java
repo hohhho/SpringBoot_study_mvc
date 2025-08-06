@@ -3,12 +3,16 @@ package project.server.board.controller;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import project.server.board.dto.BoardPatchDto;
 import project.server.board.dto.BoardPostDto;
+import project.server.board.dto.BoardResponseDto;
 import project.server.board.service.BoardService;
 
 @Getter @Setter
@@ -54,5 +58,20 @@ public class BoardController {
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
+    @GetMapping("/{boardId}")
+    public ResponseEntity getBoard(@PathVariable("boardId") Long boardId){
+        BoardResponseDto boardResponseDto = boardService.findByBoardId(boardId);
+        return ResponseEntity.status(HttpStatus.OK).body(boardResponseDto);
+    }
 
+    @GetMapping
+    public ResponseEntity<Page<BoardResponseDto>> getAllBoard(
+            @RequestParam(value = "page", defaultValue = "1")int page,
+            @RequestParam(value = "size", defaultValue = "5")int size){
+
+        Pageable pageable = PageRequest.of(page-1, size);
+        Page<BoardResponseDto> boards = boardService.findAllBoards(pageable);
+
+        return ResponseEntity.status(HttpStatus.OK).body(boards);
+    }
 }
